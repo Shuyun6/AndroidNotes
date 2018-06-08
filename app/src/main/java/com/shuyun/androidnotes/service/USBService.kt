@@ -1,8 +1,10 @@
 package com.shuyun.androidnotes.service
 
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 
@@ -15,6 +17,9 @@ import android.hardware.usb.UsbManager
 class USBService {
 
     val ACTION_USB_PERMISSION = "com.shuyun.USB_PERMISSION" + hashCode()
+
+    lateinit var context: Context
+    val listOfDevice = ArrayList<UsbDevice>()
 
     /**
      * use 'object' like Java anonymous internal class
@@ -40,6 +45,30 @@ class USBService {
                 }
             }
         }
+    }
+
+    /**
+     * Register USB Receiver
+     */
+    fun register(){
+        val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), 0)
+        val filter = IntentFilter(ACTION_USB_PERMISSION)
+        //ACTION_USB_ACCESSORY_ATTACHED may no comes?
+        filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED)
+        context.registerReceiver(usbReceiver, filter)
+    }
+
+    /**
+     * Unregister USB Receiver and release source
+     */
+    fun unRegister(){}
+
+    /**
+     * list usb devices attached
+     */
+    fun listDevice(): List<UsbDevice>{
+        //list them
+        return listOfDevice
     }
 
 }
