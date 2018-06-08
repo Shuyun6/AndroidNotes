@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,9 +27,9 @@ class RecyclerViewActivity: AppCompatActivity() {
 
         val adapter = MAdapter(this)
         val list = ArrayList<ListItem>()
-        (0..15).mapTo(list) { ListItem("title$it", "content$it") }
+        (0..31).mapTo(list) { ListItem("title$it", "content$it") }
         adapter.list = list
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
 
