@@ -1,4 +1,4 @@
-package com.shuyun.androidnotes
+package com.shuyun.androidnotes.activity
 
 import android.content.Context
 import android.os.Bundle
@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.shuyun.androidnotes.data.ListItem
+import com.shuyun.androidnotes.R
+import com.shuyun.androidnotes.data.bean.ListItem
 import kotlinx.android.synthetic.main.activity_listview.*
 import kotlinx.android.synthetic.main.layout_item_listview.view.*
 
@@ -26,7 +27,7 @@ class ListViewActivity: AppCompatActivity() {
         setContentView(R.layout.activity_listview)
         val adapter = ListViewAdapter(this)
         val list = ArrayList<ListItem>()
-        (0..15).mapTo(list) { ListItem("title"+ it, "content"+ it) }
+        (0..15).mapTo(list) { ListItem("title" + it, "content" + it) }
 
         adapter.list = list
         lvContent.adapter = adapter

@@ -1,16 +1,16 @@
-package com.shuyun.androidnotes
+package com.shuyun.androidnotes.activity
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.shuyun.androidnotes.data.ListItem
+import com.shuyun.androidnotes.R
+import com.shuyun.androidnotes.data.bean.ListItem
 import kotlinx.android.synthetic.main.activity_recyclerview.*
 
 /**

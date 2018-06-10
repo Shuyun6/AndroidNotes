@@ -19,12 +19,12 @@ class USBService {
     val ACTION_USB_PERMISSION = "com.shuyun.USB_PERMISSION" + hashCode()
 
     lateinit var context: Context
-    val listOfDevice = ArrayList<UsbDevice>()
+    private val listOfDevice = ArrayList<UsbDevice>()
 
     /**
      * use 'object' like Java anonymous internal class
      */
-    val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 ACTION_USB_PERMISSION -> {
