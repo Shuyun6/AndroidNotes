@@ -2,9 +2,9 @@ package com.shuyun.androidnotes.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.shuyun.androidnotes.R
 import com.shuyun.androidnotes.data.bean.Person
-import kotlinx.android.synthetic.main.activity_functinal.*
 import java.util.function.Predicate
 
 /**
@@ -15,22 +15,20 @@ import java.util.function.Predicate
  */
 class FunctionalActivity: AppCompatActivity() {
 
-    val listOfPerson = ArrayList<Person>()
+    private val listOfPerson = ArrayList<Person>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_functinal)
-        getPersonList()
-        val list = finPersonByNameAndSex2("12",1)
-        val stringBuilder = StringBuilder()
-        list.map { stringBuilder.append(it.toString()).append(" ") }
-        tvMsg.text = stringBuilder
-
+        getPersonList().stream().filter{ it.sex == 1 }.map {Person(it.name+"A", it.sex)}.forEach { Log.e("test", "result: $it") }
     }
 
-    fun getPersonList() {
-//        (0..15).map { listOfPerson.add(Person(it.toString(), (Math.random()*10/2).toInt())) }
-        (0..15).map { listOfPerson.add(Person(it.toString(), 1)) }
+    /**
+     * create data for testing
+     */
+    private fun getPersonList(): ArrayList<Person> {
+        (0..15).map { listOfPerson.add(Person(it.toString(), it%2)) }
+        return listOfPerson
     }
 
     /**
