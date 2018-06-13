@@ -1,16 +1,13 @@
 package com.shuyun.androidnotes.service
 
 import android.app.PendingIntent
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
-import android.widget.Toast
 import com.shuyun.androidnotes.utils.Log
-import com.shuyun.pupilla.Pupilla
 
 /**
  * USB Service for controlling
@@ -20,13 +17,12 @@ import com.shuyun.pupilla.Pupilla
  */
 class USBService(var context: Context) {
 
-    val ACTION_USB_PERMISSION = "com.shuyun.USB_PERMISSION" + hashCode()
-    val ACTION_USB_STATE = "android.hardware.usb.action.USB_STATE"
-    val USB_CONNECTED = "connected"
+    private val ACTION_USB_PERMISSION = "com.shuyun.USB_PERMISSION" + hashCode()
+    private val ACTION_USB_STATE = "android.hardware.usb.action.USB_STATE"
 
     private val listOfDevice = ArrayList<UsbDevice>()
 
-    val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
+    private val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
 
     /**
      * use 'object' like Java anonymous internal class
@@ -40,26 +36,22 @@ class USBService(var context: Context) {
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         Log.Companion.e("get permission")
                         //use permission
-                        test(usbDevice)
                     } else {
                         Log.Companion.e("failed to get permission")
                         //failed to use permission
                     }
                 }
                 UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
+                    //process attach event
                     Log.Companion.e("ACTION_USB_DEVICE_ATTACHED")
                     val usbDevice: UsbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-                    if (!usbManager.hasPermission(usbDevice)) {
-                        val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), 0)
-                        usbManager.requestPermission(usbDevice, permissionIntent)
-                    }
-                    //process attach event
+                    updatePermission(usbDevice)
                 }
                 UsbManager.ACTION_USB_DEVICE_DETACHED -> {
+                    //process detach event
                     Log.Companion.e("ACTION_USB_DEVICE_DETACHED")
                     val usbDevice: UsbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
 
-                    //process detach event
                 }
             }
         }
@@ -69,8 +61,6 @@ class USBService(var context: Context) {
         val conn = usbManager.openDevice(device)
         val fs = conn.fileDescriptor
         Log.Companion.e("conn.fileDescriptor "+fs)
-        val res = Pupilla().configuration
-        Log.Companion.e("configuration "+res)
     }
 
     /**
@@ -92,6 +82,13 @@ class USBService(var context: Context) {
      */
     fun unRegister(){
         context.unregisterReceiver(usbReceiver)
+    }
+
+    private fun updatePermission(device: UsbDevice){
+        if (!usbManager.hasPermission(device)) {
+            val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), 0)
+            usbManager.requestPermission(device, permissionIntent)
+        }
     }
 
     /**
