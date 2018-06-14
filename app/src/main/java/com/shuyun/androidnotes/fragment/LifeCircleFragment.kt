@@ -2,11 +2,13 @@ package com.shuyun.androidnotes.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.style.BackgroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.shuyun.androidnotes.R
 import com.shuyun.androidnotes.utils.Log
+import kotlinx.android.synthetic.main.fragment_normal.*
 
 /**
  * $desc$
@@ -22,47 +24,53 @@ class LifeCircleFragment: BaseFragment(){
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        Log.Companion.e("onAttach")
+        Log.Companion.e("LifeCircleFragment: onAttach")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.Companion.e("onCreate")
+        Log.Companion.e("LifeCircleFragment: onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.Companion.e("onCreateView")
-        return inflater.inflate(R.layout.fragment_normal, container, false)
+        Log.Companion.e("LifeCircleFragment: onCreateView")
+        val view = inflater.inflate(R.layout.fragment_normal, container, false)
+
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Log.Companion.e("onActivityCreated")
+        Log.Companion.e("LifeCircleFragment: onActivityCreated")
+        val bundle = arguments
+        val color = bundle?.getInt("color")?:1
+        llRoot.setBackgroundColor(color)
     }
 
     override fun onStart() {
         super.onStart()
-        Log.Companion.e("onStart")
+        Log.Companion.e("LifeCircleFragment: onStart")
+        tvContent.text = id
     }
 
     override fun onResume() {
         super.onResume()
-        Log.Companion.e("onResume")
+        Log.Companion.e("LifeCircleFragment: onResume")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.Companion.e("onDestroyView")
+        Log.Companion.e("LifeCircleFragment: onDestroyView")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.Companion.e("onDestroy")
+        Log.Companion.e("LifeCircleFragment: onDestroy")
     }
 
     override fun onDetach() {
         super.onDetach()
-        Log.Companion.e("onDetach")
+        Log.Companion.e("LifeCircleFragment: onDetach")
     }
 
 
