@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <!--define a drawable-->
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="48dp"
+            android:height="48dp"
+            android:viewportWidth="12"
+            android:viewportHeight="12">
+            <path
+                android:name="body"
+                android:fillColor="#DB4437"
+                android:pathData="M 2,6 C 2,3.8 3.8,2 6,2 C 8.2,2 10,3.8 10,6 C 10,8.2 8.2,10 6,10 C 3.8,10 2,8.2 2,6"/>
+            <group
+                android:name="group_head"
+                android:pivotX="6"
+                android:pivotY="6"
+                android:rotation="0">
+                <path
+                    android:name="head"
+                    android:fillColor="#3F51B5"
+                    android:pathData="M1 3 L3 1 L3.5 1.5 L1.5 3.5 Z M9 1 L11 3 L10.5 3.5 L8.5 1.5 Z"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <!--define animation to a target-->
+    <target android:name="group_head">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="0"
+                    android:valueTo="10">
+                </objectAnimator>
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="10"
+                    android:valueTo="-10">
+                </objectAnimator>
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="-10"
+                    android:valueTo="10">
+                </objectAnimator>
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="10"
+                    android:valueTo="-10">
+                </objectAnimator>
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="-10"
+                    android:valueTo="10">
+                </objectAnimator>
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="10"
+                    android:valueTo="-10">
+                </objectAnimator>
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="-10"
+                    android:valueTo="10">
+                </objectAnimator>
+                <objectAnimator
+                    android:duration="100"
+                    android:valueType="floatType"
+                    android:propertyName="rotation"
+                    android:valueFrom="10"
+                    android:valueTo="0">
+                </objectAnimator>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
