@@ -20,6 +20,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled = true
+    }
+    dependencies {
+        kapt "com.android.databinding:compiler:$android_plugin_version"
+    }
+    kapt {
+        generateStubs = true
+    }
+    buildToolsVersion '27.0.3'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
