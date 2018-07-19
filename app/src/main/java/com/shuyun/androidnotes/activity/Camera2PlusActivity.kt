@@ -19,12 +19,12 @@ import com.shuyun.androidnotes.utils.Log
 import kotlinx.android.synthetic.main.activity_camera2.*
 
 /**
- * An activity holds camera2 to preview(simple experience)
+ * An activity holds camera2 to preview(advance experience)
  * @author shuyun
  * @created on 2018/7/4 0004 15:35
  * @changed on 2018/7/4 0004 15:35
  */
-class Camera2Activity: AppCompatActivity(), TextureView.SurfaceTextureListener {
+class Camera2PlusActivity : AppCompatActivity(), TextureView.SurfaceTextureListener {
 
     private lateinit var handler: Handler
     private lateinit var cameraManager: CameraManager
@@ -49,7 +49,7 @@ class Camera2Activity: AppCompatActivity(), TextureView.SurfaceTextureListener {
             //5. open camera
             cameraManager.openCamera(cameraId, stateCallback, null)
         } else {
-            Log.Companion.e("CAMERA PERMISSION DENY")
+            Log.e("CAMERA PERMISSION DENY")
         }
     }
 

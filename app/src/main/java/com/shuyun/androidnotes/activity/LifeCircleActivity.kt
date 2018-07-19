@@ -10,7 +10,7 @@ import com.shuyun.androidnotes.utils.Log
  * @created on 2018/6/11 0011 18:40
  * @changed on 2018/6/11 0011 18:40
  */
-class LifeCircleActivity: AppCompatActivity() {
+open class LifeCircleActivity: AppCompatActivity() {
 
     lateinit var user: String
     lateinit var password: String
