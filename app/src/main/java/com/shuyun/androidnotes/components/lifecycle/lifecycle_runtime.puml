@@ -1,0 +1,46 @@
+@startuml
+
+class LifecycleRegistry{
+- mObserverMap : FastSafeIterableMap<LifecycleObserver, ObserverWithState>
+- mState : State
+- mLifecycleOwner : WeakReference<LifecycleOwner>
+- mAddingObserverCounter : int
+- mHandlingEvent : boolean
+- mNewEventOccurred : boolean
+- mParentStates : ArrayList<State>
+
++ LifecycleRegistry(provider : LifecycleOwner)
++ markState(state : State)
++ handleLifecycleEvent(event : Event)
+- moveToState(next : State)
+- isSynced() : boolean
+- calculateTargetState(observer : LifecycleObserver) : State
++ addObserver(observer : LifecycleObserver)
+- popParentState()
+- pushParentState(state : State)
++ removeObserver(observer : LifecycleObserver)
++ getObserverCount() : int
++ getCurrentState() : State
+getStateAfter(event : Event) : State
+- downEvent(state : State) : Event
+- upEvent(state : State) : Event
+- forwardPass(lifecycleOwner : LifecycleOwner)
+- backwardPass(lifecycleOwner : LifecycleOwner)
+- sync()
+min(state1 : State, state2 : State) : State
+
+}
+
+class ObserverWithState{
+mState : State
+mLifecycleObserver : GenericLifecycleObserver
+ObserverWithState(observer : LifecycleObserver, initialState : State)
+dispatchEvent(owner : LifecycleOwner, event : Event)
+}
+
+Lifecycle <|-- LifecycleRegistry
+LifecycleRegistry +-> ObserverWithState
+LifecycleRegistry ..> LifecycleObserver
+LifecycleRegistry ..> LifecycleOwner
+
+@enduml
