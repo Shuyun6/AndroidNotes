@@ -1,0 +1,65 @@
+@startuml
+
+abstract class Lifecycle{
++ addObserver(observer : LifecycleObserver) : void
++ removeObserver(observer : LifecycleObserver) : void
++ getCurrentState() : State
+}
+
+interface LifecycleObserver{
+}
+
+annotation OnLifecycleEvent
+
+interface LifecycleOwner{
+getLifecycle() : Lifecycle
+}
+
+class ClassesInfoCache{
+sInstance : ClassesInfoCache
+- mCallbackMap : Map<Class, CallbackInfo>
+- mHasLifecycleMethods : Map<Class, Boolean>
+hasLifecycleMethods(klass : Class) : boolean
+- getDeclaredMethods(klass : Class) : Method[]
+getInfo(klass : Class) : CallbackInfo
+- verifyAndPutHandler(handlers : Map<MethodReference, Lifecycle.Event>,
+newHandler : MethodReference, newEvent Lifecycle.Event, klass Class)
+- createInfo(klass : Class, declaredMethods : Method[])
+}
+
+interface FullLifecycleObserver{
+onCreate(owner : LifecycleOwner) : void
+onStart(owner : LifecycleOwner) : void
+onResume(owner : LifecycleOwner) : void
+onPause(owner : LifecycleOwner) : void
+onStop(owner : LifecycleOwner) : void
+onDestroy(owner : LifecycleOwner) : void
+}
+
+class FullLifecycleObserverAdapter{
+- mObserver : FullLifecycleObserver
+FullLifecycleObserverAdapter(observer : FullLifecycleObserver)
+onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+}
+
+class ReflectiveGenericLifecycleObserver{
+- mWrapped : Object
+- mInfo : CallbackInfo
+ReflectiveGenericLifecycleObserver(wrapped : Object)
+onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+}
+
+'/Relationship
+Lifecycle -> LifecycleObserver
+
+LifecycleObserver -> OnLifecycleEvent
+
+LifecycleObserver <|-- FullLifecycleObserver
+FullLifecycleObserver <.. FullLifecycleObserverAdapter
+LifecycleOwner <- FullLifecycleObserver
+
+ReflectiveGenericLifecycleObserver --> ClassesInfoCache
+LifecycleObserver <|.. ReflectiveGenericLifecycleObserver
+
+
+@enduml

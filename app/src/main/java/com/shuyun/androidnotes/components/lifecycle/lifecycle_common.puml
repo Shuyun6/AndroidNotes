@@ -1,0 +1,163 @@
+@startuml
+
+abstract class Lifecycle{
++ addObserver(observer : LifecycleObserver) : void
++ removeObserver(observer : LifecycleObserver) : void
++ getCurrentState() : State
+}
+
+enum Event{
+ON_CREATE
+ON_START
+ON_RESUME
+ON_PAUSE
+ON_STOP
+ON_DESTROY
+ON_ANY
+}
+
+enum State{
+DESTROYED
+INITIALIZED
+CREATED
+STARTED
+RESUMED
++ isAtLeast(state State) : boolean
+}
+
+interface LifecycleObserver{
+}
+
+annotation OnLifecycleEvent
+
+interface LifecycleOwner{
+getLifecycle() : Lifecycle
+}
+
+class ClassesInfoCache{
+sInstance : ClassesInfoCache
+- mCallbackMap : Map<Class, CallbackInfo>
+- mHasLifecycleMethods : Map<Class, Boolean>
+hasLifecycleMethods(klass : Class) : boolean
+- getDeclaredMethods(klass : Class) : Method[]
+getInfo(klass : Class) : CallbackInfo
+- verifyAndPutHandler(handlers : Map<MethodReference, Lifecycle.Event>, newHandler : MethodReference, newEvent Lifecycle.Event, klass Class)
+- createInfo(klass : Class, declaredMethods : Method[])
+}
+
+    class CallbackInfo{
+    mEventToHandlers : Map<Lifecycle.Event, List<MethodReference>>
+    mHandlerToEvent : Map<MethodReference, Lifecycle.Event>
+    CallbackInfo(handlerToEvent Map<MethodReference, Lifecycle.Event)
+    invokeCallbacks(source : LifecycleOwner, event Lifecycle.Event, target : Object)
+    invokeMethodsForEvent(handlers : List<MethodReference>, source : LifecycleOwner, event : Lifecycle.Event, mWrapped : Object)
+    }
+
+    class MethodReference{
+    mCallType : int
+    mMethod : Method
+    MethodReference(callType : int, method : Method)
+    invokeCallback(source : LifecycleOwner, event : Lifecycle.Event, target : Object) : void
+    + equals(o : Object) : void
+    + hashCode() : int
+    }
+
+class CompositeGeneratedAdaptersObserver{
+- mGeneratedAdapters : GeneratedAdapter[]
+CompositeGeneratedAdaptersObserver(generatedAdapters : GeneratedAdapter[])
+onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+}
+
+interface FullLifecycleObserver{
+onCreate(owner : LifecycleOwner) : void
+onStart(owner : LifecycleOwner) : void
+onResume(owner : LifecycleOwner) : void
+onPause(owner : LifecycleOwner) : void
+onStop(owner : LifecycleOwner) : void
+onDestroy(owner : LifecycleOwner) : void
+}
+
+class FullLifecycleObserverAdapter{
+- mObserver : FullLifecycleObserver
+FullLifecycleObserverAdapter(observer : FullLifecycleObserver)
+onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+}
+
+interface GeneratedAdapter{
+callMethods(source : LifecycleOwner, event : Event, onAny : boolean, logger : MethodCallsLogger)
+}
+
+interface GenericLifecycleObserver{
+onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+}
+
+class Lifecycling{
+- REFLECTIVE_CALLBACK : int
+- GENERATED_CALLBACK : int
+- sCallbackCache : Map<Class, Integer>
+- sClassToAdapters : Map<Class, List<Constructor<? extends GeneratedAdapter>>>
+getCallback(object : Object) : GenericLifecycleObserver
+- createGeneratedAdapter(constructor : Constructor<? extends GeneratedAdapter>, object : Object)
+- generatedConstructor(klass : Class<?>) : Constructor<? extends GeneratedAdapter>
+- getObserverConstructorType(klass : Class<?>) : int
+- resolveObserverCallbackType(klass : Class<?>) : int
+- isLifecycleParent(klass : Class<?>) : boolean
+- getAdapterName(className : String) : String
+
+}
+
+class MethodCallsLogger{
+- mCalledMethods : Map<String, Integer>
++ approveCall(name : String, type : int) : boolean
+}
+
+class ReflectiveGenericLifecycleObserver{
+- mWrapped : Object
+- mInfo : CallbackInfo
+ReflectiveGenericLifecycleObserver(wrapped : Object)
+onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+}
+
+class SingleGeneratedAdapterObserver{
+- mGeneratedAdapter : GeneratedAdapter
+SingleGeneratedAdapterObserver(generatedAdapter : GeneratedAdapter)
+onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+}
+
+'/Relationship
+Lifecycle +--> State
+Lifecycle +--> Event
+Lifecycle -> LifecycleObserver
+
+LifecycleObserver -> OnLifecycleEvent
+
+ClassesInfoCache +--> CallbackInfo
+ClassesInfoCache +--> MethodReference
+
+CallbackInfo ..> MethodReference
+LifecycleOwner <.. CallbackInfo
+
+LifecycleOwner <.. MethodReference
+
+LifecycleObserver <|--- GenericLifecycleObserver
+LifecycleOwner <.. GenericLifecycleObserver
+
+GenericLifecycleObserver <|. CompositeGeneratedAdaptersObserver
+
+LifecycleObserver <|-- FullLifecycleObserver
+GenericLifecycleObserver <|. FullLifecycleObserverAdapter
+FullLifecycleObserver <... FullLifecycleObserverAdapter
+CompositeGeneratedAdaptersObserver -> GeneratedAdapter
+
+ReflectiveGenericLifecycleObserver --> ClassesInfoCache
+GenericLifecycleObserver <|.. ReflectiveGenericLifecycleObserver
+
+SingleGeneratedAdapterObserver --> GeneratedAdapter
+GenericLifecycleObserver <|.. SingleGeneratedAdapterObserver
+GeneratedAdapter <. Lifecycling
+
+CompositeGeneratedAdaptersObserver ..> MethodCallsLogger
+GeneratedAdapter ..> MethodCallsLogger
+
+
+@enduml
