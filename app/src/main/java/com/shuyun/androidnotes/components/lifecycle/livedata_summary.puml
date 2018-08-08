@@ -1,0 +1,21 @@
+@startuml
+
+abstract class ViewModel{
+}
+
+abstract class LiveData{
++ observe()
+}
+
+abstract class Lifecycle{
+}
+
+interface Observer{
++ onChanged()
+}
+
+ViewModel -> LiveData
+Observer <--o LiveData
+Lifecycle <--o LiveData
+
+@enduml
