@@ -1,0 +1,127 @@
+@startuml
+
+class EmptyActivityLifecycleCallbacks{
++ onActivityCreated(activity : Activity, savedInstanceState : Bundle)
++ onActivityStarted(activity : Activity)
++ onActivityResumed(activity : Activity)
++ onActivityPaused(activity : Activity)
++ onActivityStopped(activity : Activity)
++ onActivitySaveInstanceState(activity : Activity)
++ onActivityDestroyed(activity : Activity)
+}
+
+class LifecycleDispatcher{
+init(context : Context)
+- markState(manager : Fragment, state : State)
+- markStateIn(object : Object, state : State)
+- markState(activity : FragmentActivity, state : State)
+- dispatchIfLifecycleOwner(fragment : Fragment, event : Event)
+
+}
+
+    class DispatchActivityCallback{
+        - mFragmentCallback : FragmentCallback
+        DispatchActivityCallback()
+        + onActivityCreated(activity : Activity, saveInstanceState : Bundle)
+        + onActivityStopped(activity : Activity)
+        + onActivitySaveInstanceState(activity : Activity, outState : Bundle)
+    }
+
+    class DestructionReportFragment{
+    + onPause()
+    + onStop()
+    + onDestroy()
+    # dispatch(event : Event)
+    }
+
+    class FragmentCallback{
+    + onFragmentCreated(fm : FragmentManager, f : Fragment, savedInstanceState : Bundle)
+    + onFragmentStarted(fm : FragmentManager, f : Fragment)
+    + onFragmentResumed(fm : FragmentManager, f : Fragment)
+    }
+
+class LifecycleService{
+- mDispatcher : ServiceLifecycleDispatcher
++ onCreate()
++ onBind(intent : Intent) : IBinder
++ onStart(intent : Intent, startId : int)
++ onStartCommand(intent : Intent, flags : int, startId : int)
++ onDestroy()
++ getLifecycle() : Lifecycle
+}
+
+class ProcessLifecycleOwner{
+- mHandler : Handler
+- mRegistry : LifecycleRegistry
+- sInstance : ProcessLifecycleOwner
++ get() : LifecycleOwner
+init(context : Context)
+activityStarted()
+activityResumed()
+activityPaused()
+activityStopped()
+- dispatchPauseIfNeeded()
+- dispatchStopIfNeeded()
+attach(context : Context)
++ getLifecycle() : Lifecycle
+
+}
+
+class ServiceLifecycleDispatcher{
+- mRegistry : LifecycleRegistry
+- mHandler : Handler
+- mLastDispatchRunnable : DispatchRunnable
++ ServiceLifecycleDispatcher(provider : LifecycleOwner)
+- postDispatchRunnable(event : Event)
++ onServicePreSuperOnCreate()
++ onServicePreSuperOnBind()
++ onServicePreSuperOnStart()
++ onServicePreSuperOnDestroy()
++ getLifecycle() : Lifecycle
+
+}
+
+class ViewModelProviders{
+- checkApplication(activity : Activity) : Application
+- checkActivity(fragment : Fragment) : Activity
++ of(fragment : Fragment) : ViewModelProvider
++ of(activity : FragmentActivity) : ViewModelProvider
++ of(fragment : Fragment, factory : Factory) : ViewModelProvider
++ of(activity : FragmentActivity, factory : Factory) : ViewModelProvider
+}
+
+class DefaultFactory{
++ DefaultFactory(application : Application)
+}
+
+class ViewModelStores{
+- ViewModelStores()
++ of(activity : FragmentActivity) : ViewModelStore
++ of(fragment : Fragment) : ViewModelStore
+}
+
+Application.ActivityLifecycleCallbacks <|.. EmptyActivityLifecycleCallbacks
+
+LifecycleDispatcher +-> DispatchActivityCallback
+LifecycleDispatcher +--> DestructionReportFragment
+LifecycleDispatcher +--> FragmentCallback
+EmptyActivityLifecycleCallbacks <|-- DispatchActivityCallback
+DispatchActivityCallback -> FragmentCallback
+Fragment <|-- DestructionReportFragment
+FragmentCallback ..> DestructionReportFragment
+
+Service <|-- LifecycleService
+LifecycleOwner <|.. LifecycleService
+LifecycleService -> ServiceLifecycleDispatcher
+
+LifecycleOwner <|.. ProcessLifecycleOwner
+ProcessLifecycleOwner -> LifecycleRegistry
+
+ServiceLifecycleDispatcher --> LifecycleRegistry
+
+ViewModelProviders --> ViewModelProvider
+ViewModelProviders +-> DefaultFactory
+ViewModelStores ..> ViewModelStoreOwner
+
+
+@enduml

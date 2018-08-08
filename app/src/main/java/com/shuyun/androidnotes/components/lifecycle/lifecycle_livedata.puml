@@ -1,0 +1,104 @@
+@startuml
+
+abstract class LiveData<T>{
+- mDataLock : Object
+- NOT_SET : Object
+- mObservers : SafeIterableMap<Observer<T>, ObserverWrapper>
+- mActiveCount : int
+- mData : Object
+- mPendingData : Object
+- mDispatchingValue : boolean
+- mDispatchingInvalidated : boolean
+- mPostValueRunnable : Runnable
+
+- considerNotify(observer : ObserverWrapper)
+- dispatchingValue(initiator : ObserverWrapper)
++ observe(owner : LifecycleOwner, observer : Observer<T>)
++ observeForever(observer : Observer<T>)
++ removeObserver(observer : Observer<T>)
++ removeObservers(owner : LifecycleOwner)
+# postValue(value : T)
+# setValue(value : T)
++ getValue() : T
+# onActive()
+# onInactive()
++ hasObservers() : boolean
++ hasActiveObservers() : boolean
+
+}
+
+class LifecycleBoundObserver{
+   mOwner : LifecycleOwner
+   LifecycleBoundObserver(owner : LifecycleOwner, observer : Observer<T>)
+   shouldBeActive() : boolean
+   onStateChanged(source : LifecycleOwner, event : Lifecycle.Event) : void
+   isAttachedTo(owner : LifecycleOwner) : boolean
+   detachObserver()
+}
+
+abstract class ObserverWrapper{
+mObserver : Observer<T>
+mActive : boolean
+mLastVersion : int
+ObserverWrapper(observer : Observer<T>)
+shouldBeActive() : boolean
+isAttachedTo(owner : LifecycleOwner) : boolean
+activeStateChanged(newActive : boolean)
+
+}
+
+class MutableLiveData<T>{
++ postValue(value T)
++ setValue(value T)
+}
+
+interface Observer<T>{
+onChanged(t : T)
+}
+
+abstract class ComputableLiveData<T>{
+- mExecutor : Executor
+- mLiveData : LiveData<T>
++ ComputableLiveData()
++ ComputableLiveDate(executor : Executor)
++ getLiveData() : LiveData<T>
++ invalidate()
+# compute() : T
+}
+
+class MediatorLiveData{
+- mSources : SafeIterableMap<LiveData<?>, Source<?>>
++ addSource(source : LiveData, onChanged : Observer)
++ removeSource(toRemote : LiveData<S>)
+# onActive()
+# onInactive()
+
+}
+
+class Source<V>{
+mLiveData : LiveData<V>
+mObserver : Observer<V>
+Source(liveData : LiveData<V>, observer : Observer<V>)
+plug()
+unplug()
+onChanged(v : V)
+}
+
+class Transformations{
++ map(source : LiveData, func : Function) : LiveData<Y>
++ switch(trigger : LiveData, func : Function) : LiveData<Y>
+}
+
+
+LiveData +-> LifecycleBoundObserver
+ObserverWrapper <|.. LifecycleBoundObserver
+LiveData ..> LifecycleOwner
+LiveData ..> Observer
+LiveData <|-- MutableLiveData
+
+ComputableLiveData -> LiveData
+MediatorLiveData +-> Source
+MutableLiveData <|-- MediatorLiveData
+Transformations -> LiveData
+
+@enduml

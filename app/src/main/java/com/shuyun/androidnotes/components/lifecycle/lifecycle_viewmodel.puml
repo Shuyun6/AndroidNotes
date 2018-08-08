@@ -1,0 +1,62 @@
+@startuml
+
+abstract class ViewModel{
+#onCleared() : void
+}
+
+class AndroidViewModel{
+- application : Application
++ AndroidViewModel(application : Application)
++ getApplication() : <T extends Application>
+}
+
+interface ViewModelStoreOwner{
++ getViewModelStore() : ViewModelStore
+}
+
+class ViewModelStore{
+- mMap : HashMap<String, ViewModel>
+put(key : String, viewModel : ViewModel) : void
+get(key : String) : ViewModel
++ clear() : void
+}
+
+class ViewModelProvider{
+- DEFAULT_KEY : String
+- mFactory : Factory
+- mViewModelStore : ViewModelStore
+
++ ViewModelProvider(owner : ViewModelStoreOwner, factory : Factory)
++ ViewModelProvider(store : ViewModelStore, factory : Factory)
++ get(modelClass : Class<T>) : <T extends ViewModel>
++ get(key : String, modelClass : Class<T>) : <T extends ViewModel>
+}
+
+interface Factory{
+create(modelClass : Class<T>) : <T extends ViewModel>
+}
+
+class NewInstanceFactory{
+create(modelClass : Class<T>) : <T extends ViewModel>
+}
+
+class AndroidViewModelFactory{
+- sInstance : AndroidViewModelFactory
+- application : Application
++ getInstance(application : Application) : AndroidViewModelFactory
++ AndroidViewModelFactory(application : Application)
++ create(application : Application) : <T extends ViewModel>
+
+}
+
+'/Relationship
+ViewModel <|-- AndroidViewModel
+ViewModel <- ViewModelStore
+
+ViewModelProvider --> ViewModelStore
+ViewModelProvider +--> Factory
+ViewModelProvider .> ViewModelStoreOwner
+Factory <|.. NewInstanceFactory
+NewInstanceFactory <|.. AndroidViewModelFactory
+
+@enduml
