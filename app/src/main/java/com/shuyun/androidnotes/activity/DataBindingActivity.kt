@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.shuyun.androidnotes.R
 import com.shuyun.androidnotes.data.bean.Person
 import com.shuyun.androidnotes.databinding.ActivityDatabindingBinding
+import kotlinx.android.synthetic.main.activity_databinding.*
 
 /**
  * $desc$
@@ -22,6 +23,9 @@ class DataBindingActivity: AppCompatActivity() {
         val person = Person("Shuyun", 1)
         binding.person = person
 
+        tvContent.setOnClickListener {
+            binding.person = Person("shuyun6", 2)
+        }
 
     }
 
