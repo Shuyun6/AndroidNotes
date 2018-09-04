@@ -1,0 +1,123 @@
+@startuml
+
+class Node{
+SHARED : Node
+EXCLUSIVE : Node
+CANCELLED : int
+SIGNAL : int
+CONDITION : int
+PROPAGATE : int
+waitStatus : int
+prev : Node
+next : Node
+thread : Thread
+nextWaiter : Node
+
+isShared() : boolean
+predecessor() : Node
+Node()
+Node(thread : Thread, mode : Node)
+Node(thread : Thread, waitStatus : int)
+
+}
+
+abstract class AbstractQueuedSynchronizer{
+
+head : Node
+tail : Node
+state : int
+spinForTimeoutThreshold : long = 1000L
+
+
+# AbstractQueuedSynchronizer()
+# getState() : int
+# setState(newState : int)
+# compareAndSetState(expect : int, update : int) : boolean
+- enq(node : Node) : Node
+- addWaiter(mode : Node) : Node
+- setHead(node : Node)
+- unparkSuccessor(node : Node)
+- doReleaseShared()
+- setHeadAndPropagate(node : Node, propagate : int)
+- cancelAcquire(node : Node)
+- shouldParkAfterFailedAcquire(pred : Node, node : Node)
+selfInterrupt()
+- parkAndCheckInterrupt() : boolean
+acquireQueued(node : Node, arg : int)
+- doAcquireInterruptibly(arg : int)
+- doAcquireNanos(arg : int, nanosTimeout : long)
+- doAcquireShared(arg : int)
+- doAcquireSharedInterruptibly(arg : int)
+- doAcquireSharedNanos(arg : int, nanosTimeout : long) : boolean
+# tryAcquire(arg : int) : boolean
+# tryRelease(arg : int) : boolean
+# tryAcquireShared(arg : int) : int
+# tryReleaseShared(arg : int) : boolean
+# isHeldExclusively() : boolean
++ acquire(arg : int)
++ acquireInterruptibly(arg : int)
++ tryAcquireNanos(arg : int, nanosTimeout : long) : boolean
++ release(arg : int)
++ acquireShared(arg : int)
++ acquireSharedInterruptibly(arg : int)
++ tryAcquireSharedNanos(arg : int, nanosTimeout :long) : boolean
++ releaseShared(arg : int) : boolean
++ hasQueuedThreads() : boolean
++ hasContended() : boolean
++ getFirstQueuedThread() : Thread
+- fullGetFirstQueuedThread() : Thread
++ isQueued(thread : Thread) : boolean
+apparentlyFirstQueuedIsExclusive() : boolean
++ hasQueuedPredecessors() : boolean
++ getQueueLength() : int
++ getQueuedTreads() : Collection<Thread>
++ getExclusiveQueuedThreads() : Collection<Thread>
++ getSharedQueuedThreads() : Collection<Thread>
+isOnSyncQueue(node : Node) : boolean
+- findNodeFromTail(node : Node) : boolean
+transterForSignal(node : Node) : boolean
+transferAfterCancelledWait(node : Node) : boolean
+fullyRelease(node : Node) : int
++ owns(condition : ConditionObject) : boolean
++ hasWaiters(condition : ConditionObject) : boolean
++ getWaitQueueLength(condition : ConditionObject) : int
++ getWaitingThreads(condition : ConditionObject) : Collection<Thread>
+- compareAndSetHead(update : Node) : boolean
+- compareAndSetTail(expect : Node, update : Node) : boolean
+- compareAndSetWaitStatus(node : Node, expect : int , update : int): boolean
+- compareAndSetNext(node : Node, expect : Node, update : Node) : boolean
+
+
+}
+
+class ConditionObject{
+
+- firstWaiter : Node
+- lastWaiter : Node
++ ConditionObject()
+- addConditionWaiter() : Node
+- doSignal(first : Node)
+- doSignalAll(first : Node)
+- unlinkCancelledWaiter()
++ signal()
++ signalAll()
++ awaitUninterruptibly()
+- checkInterruptWhileWaiting(node : Node)
+- reportInterruptAfterWait(interruptMode : int)
++ await()
++ awaitNanos(nanosTimeout : long)
++ awaitUntil(deadline : Date)
++ await(time : long, unit : TimeUnit)
+isOwnedBy(sync : AbstractQueuedSynchronizer)
+# hasWaiters() : boolean
+# getWaitQueueLength() : int
+# getWaitingThreads() : Collection<Thread>
+
+}
+
+AbstractQueuedSynchronizer *- Node
+AbstractOwnableSynchronizer <|-- AbstractQueuedSynchronizer
+Node *- ConditionObject
+Condition <|.. ConditionObject
+
+@enduml
