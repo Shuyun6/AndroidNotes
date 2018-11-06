@@ -23,9 +23,9 @@ class DataBindingActivity: AppCompatActivity() {
         val person = Person("Shuyun", 1)
         binding.person = person
 
-        tvContent.setOnClickListener {
-            binding.person = Person("shuyun6", 2)
-        }
+//        tvContent.setOnClickListener {
+//            binding.person = Person("shuyun6", 2)
+//        }
 
     }
 
