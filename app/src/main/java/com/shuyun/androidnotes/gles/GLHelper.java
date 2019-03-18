@@ -2,7 +2,6 @@ package com.shuyun.androidnotes.gles;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.opengl.GLES30;
 
 import com.shuyun.androidnotes.utils.Log;
 
@@ -23,6 +22,10 @@ public class GLHelper {
         this.context = context;
     }
 
+    public void drawTriangle(int from, int to){
+        glDrawArrays(GL_TRIANGLES, from, to);
+    }
+
     public void updateUniformColor(int id, float red, float green, float blue, float alpha) {
         glUniform4f(id, red, green, blue, alpha);
     }
@@ -36,6 +39,12 @@ public class GLHelper {
     public void makeAttribRef(int id, Buffer data, int stride) {
         glVertexAttribPointer(id, DEFAULT_COMPONENT_COUNT, GL_FLOAT, false, stride, data);
         glEnableVertexAttribArray(id);
+    }
+
+    public int genTexture(){
+        int[] texture = new int[1];
+        glGenTextures(1, texture, 0);
+        return texture[0];
     }
 
     /**
@@ -64,7 +73,7 @@ public class GLHelper {
      * @return shader'id
      */
     public int genVertexShader(int source) {
-        return compileShader(GLES30.GL_VERTEX_SHADER, readResource(source));
+        return compileShader(GL_VERTEX_SHADER, readResource(source));
     }
 
     /**
@@ -73,7 +82,7 @@ public class GLHelper {
      * @return shader'id
      */
     public int genFragmentShader(int source) {
-        return compileShader(GLES30.GL_FRAGMENT_SHADER, readResource(source));
+        return compileShader(GL_FRAGMENT_SHADER, readResource(source));
     }
 
     /**
@@ -83,42 +92,46 @@ public class GLHelper {
      * @return program's id
      */
     public int genProgram(int vertexShaderSource, int fragmentShaderSource) {
-        return linkProgram(genVertexShader(vertexShaderSource), genFragmentShader(fragmentShaderSource));
+        int id = linkProgram(genVertexShader(vertexShaderSource), genFragmentShader(fragmentShaderSource));
+        glUseProgram(id);
+        return id;
     }
 
     private int linkProgram(int vertexShaderId, int fragmentShaderId){
-        final int programObjectId = GLES30.glCreateProgram();
+        final int programObjectId = glCreateProgram();
         if(programObjectId == 0){
             return 0;
         }
-        GLES30.glAttachShader(programObjectId, vertexShaderId);
-        GLES30.glAttachShader(programObjectId, fragmentShaderId);
-        GLES30.glLinkProgram(programObjectId);
+        glAttachShader(programObjectId, vertexShaderId);
+        glAttachShader(programObjectId, fragmentShaderId);
+        glLinkProgram(programObjectId);
+        glValidateProgram(programObjectId);
         final int[] linkStatus = new int[1];
-        GLES30.glGetProgramiv(programObjectId, GLES30.GL_LINK_STATUS, linkStatus, 0);
+        glGetProgramiv(programObjectId, GL_LINK_STATUS, linkStatus, 0);
+        Log.Companion.e("linkProgram "+linkStatus[0]);
         if(linkStatus[0] == 0){
-            GLES30.glDeleteProgram(programObjectId);
+            glDeleteProgram(programObjectId);
             return 0;
         }
         return programObjectId;
     }
 
     private int compileShader(int type, String shaderCode){
-        int id = GLES30.glCreateShader(type);
+        int id = glCreateShader(type);
         if(id == 0){
             return id;
         }
         //Add shader source into a shader object with id
-        GLES30.glShaderSource(id, shaderCode);
+        glShaderSource(id, shaderCode);
         //Then compile it by id
-        GLES30.glCompileShader(id);
+        glCompileShader(id);
         final int[] compileStatus = new int[1];
         //get compilation status from id
-        GLES30.glGetShaderiv(id, GLES30.GL_COMPILE_STATUS, compileStatus, 0);
+        glGetShaderiv(id, GL_COMPILE_STATUS, compileStatus, 0);
         Log.Companion.e("compileStatus[0] "+compileStatus[0]);
         if(compileStatus[0] == 0){
-            GLES30.glDeleteShader(id);
-            Log.Companion.e(GLES30.glGetShaderInfoLog(id));
+            glDeleteShader(id);
+            Log.Companion.e(glGetShaderInfoLog(id));
             return 0;
         }
         return id;
