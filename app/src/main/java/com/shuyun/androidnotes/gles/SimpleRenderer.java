@@ -17,7 +17,7 @@ import static android.opengl.GLES20.*;
 
 public class SimpleRenderer implements GLSurfaceView.Renderer {
 
-    private GLHelper helper;
+    private IGLHelper helper;
     private int programId;
     private FloatBuffer vertexData;
     private float[] triangle =
@@ -33,7 +33,7 @@ public class SimpleRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         glClearColor(0.0f, 0.0f, 1.0f, 0.5f);
-        helper = new GLHelper(App.Companion.getInstance());
+        helper = GLHelperFactory.getGLHelper(App.Companion.getInstance());
         //generate a GL program with vertex shader and fragment shader
         programId = helper.genProgram(R.raw.simple_vertex_shader, R.raw.simple_fragment_shader);
 

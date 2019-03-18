@@ -1,18 +1,9 @@
 package com.shuyun.androidnotes.gles;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Rect;
 
-import com.shuyun.androidnotes.utils.Log;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.Buffer;
-
-import static android.opengl.GLES30.*;
 
 class GLHelperImpl implements IGLHelper {
 
@@ -137,7 +128,7 @@ class GLHelperImpl implements IGLHelper {
         }
 
         IGLegl getGLegl(){
-            return new GLegl();
+            return new GLeglImpl();
         }
 
     }
