@@ -9,92 +9,75 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.nio.Buffer;
 
-import static android.opengl.GLES30.*;
+import static android.opengl.GLES20.GL_COMPILE_STATUS;
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
+import static android.opengl.GLES20.GL_LINK_STATUS;
+import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import static android.opengl.GLES20.glAttachShader;
+import static android.opengl.GLES20.glCompileShader;
+import static android.opengl.GLES20.glCreateProgram;
+import static android.opengl.GLES20.glCreateShader;
+import static android.opengl.GLES20.glDeleteProgram;
+import static android.opengl.GLES20.glDeleteShader;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glGetAttribLocation;
+import static android.opengl.GLES20.glGetProgramiv;
+import static android.opengl.GLES20.glGetShaderInfoLog;
+import static android.opengl.GLES20.glGetShaderiv;
+import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glLinkProgram;
+import static android.opengl.GLES20.glShaderSource;
+import static android.opengl.GLES20.glUseProgram;
+import static android.opengl.GLES20.glValidateProgram;
+import static android.opengl.GLES20.glVertexAttribPointer;
 
-public class GLHelper {
+public class GLProgramImpl implements IGLProgram {
 
-    private Context context;
-    private static final int DEFAULT_COMPONENT_COUNT = 2;
+    private WeakReference<Context> weakContext;
 
-    public GLHelper(Context context) {
-        this.context = context;
+    GLProgramImpl(Context context) {
+        weakContext = new WeakReference<>(context);
     }
 
-    public void drawTriangle(int from, int to){
-        glDrawArrays(GL_TRIANGLES, from, to);
+    private Context getContext(){
+        return weakContext.get();
     }
 
-    public void updateUniformColor(int id, float red, float green, float blue, float alpha) {
-        glUniform4f(id, red, green, blue, alpha);
-    }
-
-    /**
-     * Make a attribute reference
-     * @param id attribute field id
-     * @param data attribute data from Java
-     * @param stride stride count
-     */
-    public void makeAttribRef(int id, Buffer data, int stride) {
-        glVertexAttribPointer(id, DEFAULT_COMPONENT_COUNT, GL_FLOAT, false, stride, data);
-        glEnableVertexAttribArray(id);
-    }
-
-    public int genTexture(){
-        int[] texture = new int[1];
-        glGenTextures(1, texture, 0);
-        return texture[0];
-    }
-
-    /**
-     * Get uniform pointer in shader file from program's id
-     * @param programId program id
-     * @param field field defined in shader file
-     * @return uniform field id
-     */
-    public int getUniformId(int programId, String field) {
-        return glGetUniformLocation(programId, field);
-    }
-
-    /**
-     * Get attribute pointer in shader file from program's id
-     * @param programId program id
-     * @param field field defined in shader file
-     * @return uniform field id
-     */
+    @Override
     public int getAttribId(int programId, String field) {
         return glGetAttribLocation(programId, field);
     }
 
-    /**
-     * Compile vertex shader from shader source
-     * @param source source id from Resource
-     * @return shader'id
-     */
+    @Override
     public int genVertexShader(int source) {
         return compileShader(GL_VERTEX_SHADER, readResource(source));
     }
 
-    /**
-     * Compile fragment shader from shader source
-     * @param source source id from Resource
-     * @return shader'id
-     */
+    @Override
     public int genFragmentShader(int source) {
         return compileShader(GL_FRAGMENT_SHADER, readResource(source));
     }
 
-    /**
-     * Get program from resource of vertex and fragment shaders
-     * @param vertexShaderSource vertex shader source id
-     * @param fragmentShaderSource fragment shader source id
-     * @return program's id
-     */
+    @Override
     public int genProgram(int vertexShaderSource, int fragmentShaderSource) {
         int id = linkProgram(genVertexShader(vertexShaderSource), genFragmentShader(fragmentShaderSource));
         glUseProgram(id);
         return id;
+    }
+
+    @Override
+    public void makeAttribRef(int id, Buffer data, int stride) {
+        glVertexAttribPointer(id, 2, GL_FLOAT, false, stride, data);
+        glEnableVertexAttribArray(id);
+    }
+
+    @Override
+    public int getUniformId(int programId, String fieldName) {
+        return glGetUniformLocation(programId, fieldName);
     }
 
     private int linkProgram(int vertexShaderId, int fragmentShaderId){
@@ -140,7 +123,7 @@ public class GLHelper {
     private String readResource(int resourceId) {
         StringBuilder body = new StringBuilder();
         try {
-            InputStream inputStream = context.getResources().openRawResource(resourceId);
+            InputStream inputStream = getContext().getResources().openRawResource(resourceId);
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String nextLine;
