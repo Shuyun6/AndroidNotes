@@ -35,7 +35,7 @@ import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glValidateProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
-public class GLProgramImpl implements IGLProgram {
+class GLProgramImpl implements IGLProgram {
 
     private WeakReference<Context> weakContext;
 
