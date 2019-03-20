@@ -11,6 +11,11 @@ public class GLDrawImpl implements IGLDraw {
     }
 
     @Override
+    public void clearColor(int red, int green, int blue, int alpha) {
+        glClearColor(red, green, blue, alpha);
+    }
+
+    @Override
     public void setViewPort(Rect rect) {
         glViewport(rect.left, rect.top, rect.right, rect.bottom);
     }
@@ -23,6 +28,16 @@ public class GLDrawImpl implements IGLDraw {
     @Override
     public void drawTriangle(int from, int to) {
         glDrawArrays(GL_TRIANGLES, from, to);
+    }
+
+    @Override
+    public void drawTriangleFan(int from, int to) {
+        glDrawArrays(GL_TRIANGLE_FAN, from, to);
+    }
+
+    @Override
+    public void drawTriangleStrip(int from, int to) {
+        glDrawArrays(GL_TRIANGLE_STRIP, from, to);
     }
 
     @Override

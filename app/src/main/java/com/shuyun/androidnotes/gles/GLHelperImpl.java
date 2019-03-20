@@ -1,6 +1,7 @@
 package com.shuyun.androidnotes.gles;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import java.nio.Buffer;
@@ -26,6 +27,11 @@ class GLHelperImpl implements IGLHelper {
     }
 
     @Override
+    public void clearColor(int red, int green, int blue, int alpha) {
+        iglDraw.clearColor(red, green, blue, alpha);
+    }
+
+    @Override
     public void setViewPort(Rect rect) {
         iglDraw.setViewPort(rect);
     }
@@ -38,6 +44,16 @@ class GLHelperImpl implements IGLHelper {
     @Override
     public void drawTriangle(int from, int to) {
         iglDraw.drawTriangle(from, to);
+    }
+
+    @Override
+    public void drawTriangleFan(int from, int to) {
+        iglDraw.drawTriangleFan(from, to);
+    }
+
+    @Override
+    public void drawTriangleStrip(int from, int to) {
+        iglDraw.drawTriangleStrip(from, to);
     }
 
     @Override
@@ -86,6 +102,11 @@ class GLHelperImpl implements IGLHelper {
     }
 
     @Override
+    public void setLocation(int location) {
+        iglTexture.setLocation(location);
+    }
+
+    @Override
     public void unbindTexture() {
         iglTexture.unbindTexture();
     }
@@ -93,6 +114,11 @@ class GLHelperImpl implements IGLHelper {
     @Override
     public void initTextureParams() {
         iglTexture.initTextureParams();
+    }
+
+    @Override
+    public void putBitmap(Bitmap bitmap) {
+        iglTexture.putBitmap(bitmap);
     }
 
     private static final class Factory {

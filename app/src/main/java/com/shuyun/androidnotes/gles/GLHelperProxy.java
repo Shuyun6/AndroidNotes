@@ -1,6 +1,7 @@
 package com.shuyun.androidnotes.gles;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import java.nio.Buffer;
@@ -19,6 +20,11 @@ public class GLHelperProxy implements IGLHelper {
     }
 
     @Override
+    public void clearColor(int red, int green, int blue, int alpha) {
+        helper.clearColor(red, green, blue, alpha);
+    }
+
+    @Override
     public void setViewPort(Rect rect) {
         helper.setViewPort(rect);
     }
@@ -31,6 +37,16 @@ public class GLHelperProxy implements IGLHelper {
     @Override
     public void drawTriangle(int from, int to) {
         helper.drawTriangle(from, to);
+    }
+
+    @Override
+    public void drawTriangleFan(int from, int to) {
+        helper.drawTriangleFan(from, to);
+    }
+
+    @Override
+    public void drawTriangleStrip(int from, int to) {
+        helper.drawTriangleStrip(from, to);
     }
 
     @Override
@@ -79,6 +95,11 @@ public class GLHelperProxy implements IGLHelper {
     }
 
     @Override
+    public void setLocation(int location) {
+        helper.setLocation(location);
+    }
+
+    @Override
     public void unbindTexture() {
         helper.unbindTexture();
     }
@@ -86,5 +107,10 @@ public class GLHelperProxy implements IGLHelper {
     @Override
     public void initTextureParams() {
         helper.initTextureParams();
+    }
+
+    @Override
+    public void putBitmap(Bitmap bitmap) {
+        helper.putBitmap(bitmap);
     }
 }
