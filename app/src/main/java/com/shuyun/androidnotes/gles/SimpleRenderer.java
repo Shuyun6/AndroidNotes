@@ -20,11 +20,21 @@ public class SimpleRenderer implements GLSurfaceView.Renderer {
     private IGLHelper helper;
     private int programId;
     private FloatBuffer vertexData;
-    private float[] triangle =
+//    private float[] triangle =
+//            {
+//                    0f, 0f,
+//                    0.5f, 0.5f,
+//                    0f, 0.5f
+//
+//            };
+    private float[] triangleFan =
             {
                     0f, 0f,
+                    -0.5f, -0.5f,
+                    0.5f, -0.5f,
                     0.5f, 0.5f,
-                    0f, 0.5f
+                    -0.5f, 0.5f,
+                    -0.5f, -0.5f
 
             };
     private int field_u_Color;
@@ -46,10 +56,10 @@ public class SimpleRenderer implements GLSurfaceView.Renderer {
         Log.Companion.e("field_a_Position "+ field_a_Position);
 
         //set up native buffer through float[]
-        vertexData = ByteBuffer.allocateDirect(triangle.length * 4)
+        vertexData = ByteBuffer.allocateDirect(triangleFan.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        vertexData.put(triangle);
+        vertexData.put(triangleFan);
         vertexData.position(0);
 
         //Put vertex data into a_position field and enable it
@@ -60,7 +70,7 @@ public class SimpleRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        glViewport(0, 0, width, height);
+        helper.setViewPort(width, height);
     }
 
     @Override
@@ -68,7 +78,7 @@ public class SimpleRenderer implements GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT);
         //update u_Color values
         helper.updateUniformColor(field_u_Color, 1.0f, 0f, 0f, 1f);
-        helper.drawTriangle(0, 3);
+        helper.drawTriangleFan(0, 6);
 
     }
 }
