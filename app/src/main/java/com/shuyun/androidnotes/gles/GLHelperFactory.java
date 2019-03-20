@@ -10,7 +10,7 @@ public class GLHelperFactory {
         if (null == helper) {
             synchronized (GLHelperFactory.class) {
                 if (null == helper) {
-                    helper = new GLHelperProxy(context);
+                    helper = new GLHelperImpl(context);
                 }
             }
         }
