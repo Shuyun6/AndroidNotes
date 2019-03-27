@@ -1,0 +1,24 @@
+@startuml
+
+interface MenuPresenter
+class NavigationMenuPresenter
+
+
+interface SupportMenu
+class MenuBuilder
+class NavigationMenu
+
+class NavigationView
+
+MenuPresenter <|.. NavigationMenuPresenter
+
+SupportMenu <|.. MenuBuilder
+MenuBuilder <|-- NavigationMenu
+
+MenuPresenter o- MenuBuilder
+
+NavigationMenuPresenter --> NavigationView
+NavigationMenu --> NavigationView
+
+
+@enduml
